@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>New Tab</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width">
+<style>
+        ul{
+            border-collapse:collapse;
+            border: 1px solid #999999;
+            padding: 0;
+
+        }
+        li{
+            display: flex;
+            line-height: 100%;
+
+            /*border: 1px solid #999999;*/
+        }
+        li span{
+            flex: 1;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #999999;
+
+        }
+        .open{
+            color: red;
+        }
+</style>
+</head>
+<body>
+<div id="main">
+    <ul class="leiqu">
+
+    </ul>
+</div>
+<script type="text/javascript">
+    var bombArea = document.querySelectorAll(".leiqu")[0];
+    var allCubes = [];
+    var bombCubes = [];
+    while (bombCubes.length < 4) {
+        var bombIndex = Math.floor(Math.random()*100);
+        if (bombCubes.indexOf(bombIndex) == -1) {
+            bombCubes.push(bombIndex);
+        }
+    }
+    for (var i = 0; i < 10; i++) {
+        var bombRowElement = document.createElement("li");
+        var rowCubes = [];
+        for (var j = 0; j < 10; j++) {
+            var cube = {
+                isOpen:false,
+                isBomb:false,
+                aroundBomb:0,
+                x:i,
+                y:j
+            }
+            if (bombCubes.indexOf(i*10 + j) > -1) {
+                cube.isBomb = true;
+            }
+            for (var m = i -1 ; m <= i + 1; m++) {
+                for (var n = j - 1; n <= j + 1; n++) {
+                    if((m >=0 && n >=0)&&(bombCubes.indexOf(m*10 + n) > -1)){
+                        cube.aroundBomb++ ;
+                    }
+                }
+            }
+            var bombElement = document.createElement("span");
+            bombElement.setAttribute("position",i+"-"+j);
+            bombElement.innerHTML = "🐶";//cube.aroundBomb;
+            bombRowElement.appendChild(bombElement);
+            cube.dom = bombElement;
+            rowCubes.push(cube);
+        }
+        bombArea.appendChild(bombRowElement);
+        allCubes.push(rowCubes);
+    }
+    bombArea.addEventListener("click",function(e){
+        var position = e.target.getAttribute("position");
+        position = position.split("-");
+        open(position[0],position[1],allCubes);
+
+    });
+
+    function open(r,c,cubes){
+        var cube = cubes[r][c];
+        cube.isOpen = true;
+        if(cube.isBomb){
+            cube.dom.innerHTML = "💣";
+            setTimeout(function(){
+                alert("踩雷了");
+            },100);
+        }else{
+            cube.dom.innerHTML = cube.aroundBomb;
+        }
+
+        if(cube.aroundBomb == 0){
+            for (var m = cube.x -1 ; m <= cube.x + 1; m++) {
+                for (var n = cube.y - 1; n <= cube.y + 1; n++) {
+                    if((m >=0 && n >=0 && cubes[m] && cubes[m][n])){
+                        var aroundCube = cubes[m][n];
+                        if (aroundCube.aroundBomb == 0 && !aroundCube.isOpen&& !aroundCube.isBomb) {
+                            open(m,n,cubes);
+                        }
+                        aroundCube.dom.innerHTML = aroundCube.aroundBomb;
+                        aroundCube.isOpen == true;
+                    }
+                }
+            }
+        }
+    }
+    // function checkWin(cubes){
+    //     var win = true;
+    //     for (var i = 0; i < cubes.length; i++) {
+    //         var row = cubes[i];
+    //         for (var i = 0; i < row.length; i++) {
+    //             var cube = row[i];
+    //             if(!cube.isBomb && !cube.isOpen){
+    //                 win = false;
+    //             }
+    //         }
+    //     }
+    //     if (win) {
+    //         alert("赢了！！");
+    //     }
+    // }
+</script>
+
+</body>
+</html>
