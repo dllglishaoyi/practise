@@ -40,7 +40,7 @@
     var bombArea = document.querySelectorAll(".leiqu")[0];
     var allCubes = [];
     var bombCubes = [];
-    while (bombCubes.length < 4) {
+    while (bombCubes.length < 6) {
         var bombIndex = Math.floor(Math.random()*100);
         if (bombCubes.indexOf(bombIndex) == -1) {
             bombCubes.push(bombIndex);
@@ -81,7 +81,7 @@
         var position = e.target.getAttribute("position");
         position = position.split("-");
         open(position[0],position[1],allCubes);
-
+        checkWin(allCubes);
     });
 
     function open(r,c,cubes){
@@ -95,7 +95,7 @@
         }else{
             cube.dom.innerHTML = cube.aroundBomb;
         }
-
+        
         if(cube.aroundBomb == 0){
             for (var m = cube.x -1 ; m <= cube.x + 1; m++) {
                 for (var n = cube.y - 1; n <= cube.y + 1; n++) {
@@ -105,27 +105,27 @@
                             open(m,n,cubes);
                         }
                         aroundCube.dom.innerHTML = aroundCube.aroundBomb;
-                        aroundCube.isOpen == true;
+                        aroundCube.isOpen = true;
                     }
                 }
             }
         }
     }
-    // function checkWin(cubes){
-    //     var win = true;
-    //     for (var i = 0; i < cubes.length; i++) {
-    //         var row = cubes[i];
-    //         for (var i = 0; i < row.length; i++) {
-    //             var cube = row[i];
-    //             if(!cube.isBomb && !cube.isOpen){
-    //                 win = false;
-    //             }
-    //         }
-    //     }
-    //     if (win) {
-    //         alert("赢了！！");
-    //     }
-    // }
+    function checkWin(cubes){
+        var win = true;
+        for (var i = 0; i < cubes.length; i++) {
+            var row = cubes[i];
+            for (var j = 0; j < row.length; j++) {
+                var cube = row[j];
+                if(!cube.isBomb && !cube.isOpen){
+                    win = false;
+                }
+            }
+        }
+        if (win) {
+            alert("赢了！！");
+        }
+    }
 </script>
 
 </body>
